@@ -1,19 +1,12 @@
 import express from 'express';
+import * as productsController from './products.controller.js';
 
 const router = express.Router();
 
-router.get('/products/add-product', (req, res) => {
-    res.status(200).send(`
-        <form action="/products" method="POST"> 
-            <input type="text" name="title" required>
-            <button type="submit">Aggiungi prodotto</button>
-        </form>        
-    `);
-});
-
-router.post('/products', (req, res) => {
-    console.log(req.body);
-    res.redirect('/');
-});
+router.get('/:id', productsController.getProductByID);
+router.get('/', productsController.getProducts);
+router.post('/', productsController.createProduct);
+router.put('/:id', productsController.updateProduct);
+router.delete('/:id', productsController.deleteProduct);
 
 export default router;

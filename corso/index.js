@@ -2,12 +2,12 @@ import 'dotenv/config';
 // import http from 'http';
 import express from 'express';
 
-import pagesRoute from './components/pages/pages.route.js';
 import productsRoute from './components/products/products.route.js';
 
 const app = express();
 
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.use((req, res, next) => {
     console.log('Dentro middleware 1');
@@ -21,7 +21,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(pagesRoute);
 app.use(productsRoute);
 
 app.use((req, res) => {

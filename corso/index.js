@@ -21,7 +21,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(productsRoute);
+app.use('/products', productsRoute);
 
 app.use((req, res) => {
     res.status(404).send('Pagina non trovata.');

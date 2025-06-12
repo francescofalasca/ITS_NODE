@@ -1,7 +1,7 @@
 import * as productsService from './products.service.js';
 
 export const getProductByID = (req, res) => {
-    const product = productsService.getProductsByID(Number(req.params.id));
+    const product = productsService.getProductByID(Number(req.params.id));
 
     res.status(200).json(product);
 };

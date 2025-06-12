@@ -13,9 +13,9 @@ export const getProducts = () => {
 };
 
 export const createProduct = product => {
-    const product1 = productsData.createProduct(product);
+    const newProduct = productsData.createProduct(product);
 
-    return product1;
+    return newProduct;
 };
 
 export const updateProduct = product => {

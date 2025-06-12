@@ -1,12 +1,9 @@
 import 'dotenv/config';
-// import http from 'http';
 import express from 'express';
-
 import productsRoute from './components/products/products.route.js';
 
 const app = express();
 
-// app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use((req, res, next) => {
@@ -23,27 +20,16 @@ app.use((req, res, next) => {
 
 app.use('/products', productsRoute);
 
-app.use((req, res) => {
-    res.status(404).send('Pagina non trovata.');
+app.use((err, req, res, next) => {
+    if (err.statusCode >= 400 && err.statusCode < 499) {
+        res.status(err.statusCode).json({ error: err.message });
+    } else {
+        console.error(err.stack);
+
+        res.status(500).json({ error: 'Si è verificato un errore, riprova più tardi.' });
+    }
 });
-
-// const server = http.createServer((req, res) => {
-//     console.log('Hello World!');
-
-//     if (req.url === '/' && req.method === 'GET') {
-//         res.writeHead(200, {'content-type': 'text/plain'})
-//         res.end('Benvenuto nella home page');
-//     } else if (req.url === '/about' && req.method === 'GET') {
-//         res.writeHead(200, {'content-type': 'text/plain'});
-//         res.end('Pagina About');
-//     } else {
-//         res.writeHead(404, {'content-type': 'text/plain'});
-//         res.end('Pagina non trovata');
-//     }
-// });
 
 app.listen(process.env.PORT, () => {
     console.log(`Server listening at port ${process.env.PORT}`);
 });
-
-// server.listen(process.env.PORT);

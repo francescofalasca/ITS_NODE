@@ -1,4 +1,4 @@
-// import dbProducts from '../../database/product.js';
+// import dbProducts from '../../database/products.js';
 import poolPromise from '../config/mssql.config.js';
 import ErrorWithStatus from '../../ErrorWithStatus.js';
 

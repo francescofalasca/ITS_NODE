@@ -1,4 +1,4 @@
-import ErrorWithStatus from '../../error_with_status.js';
+import ErrorWithStatus from '../../ErrorWithStatus.js';
 import * as usersService from './users.service.js';
 import z from 'zod';
 

@@ -1,4 +1,4 @@
-import ErrorWithStatus from '../../error_with_status.js';
+import ErrorWithStatus from '../../ErrorWithStatus.js';
 import * as productsData from './products.data.js';
 
 export const getProductByID = id => {

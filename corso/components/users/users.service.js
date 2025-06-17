@@ -1,4 +1,4 @@
-import ErrorWithStatus from '../../error_with_status.js';
+import ErrorWithStatus from '../../ErrorWithStatus.js';
 import * as usersData from './users.data.js';
 
 export const getUserByID = id => {

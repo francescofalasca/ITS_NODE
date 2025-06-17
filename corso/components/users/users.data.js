@@ -1,6 +1,6 @@
 // import dbUsers from '../../database/user.js';
-import poolPromise from '../../mssql.config.js';
-import ErrorWithStatus from '../../error_with_status.js';
+import poolPromise from '../config/mssql.config.js';
+import ErrorWithStatus from '../../ErrorWithStatus.js';
 
 export const getUserByID = async id => {
     const pool = await poolPromise;

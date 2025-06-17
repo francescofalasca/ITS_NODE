@@ -1,8 +1,21 @@
-import dbProducts from '../../database/product.js';
+// import dbProducts from '../../database/product.js';
+import poolPromise from '../../mssql.config.js';
 import ErrorWithStatus from '../../error_with_status.js';
 
-export const getProductByID = id => {
-    const product = dbProducts.find(p => p.id === id);
+export const getProductByID = async id => {
+    const pool = await poolPromise;
+
+    const sql = `SELECT id
+                    , name
+                    , description
+                    , price
+                    , in_stock AS 'inStock'
+                FROM products
+                WHERE id = @id`;
+
+    const queryResult = await pool.request().input("id", id).query(sql);
+
+    const product = queryResult.recordset[0];
 
     if (!product) {
         throw new ErrorWithStatus(404, `Prodotto con id ${id} non trovato.`);
@@ -11,40 +24,63 @@ export const getProductByID = id => {
     return product;
 }
 
-export const getProducts = () => {
-    return dbProducts;
+export const getProducts = async () => {
+    const pool = await poolPromise;
+
+    const sql = `SELECT id
+                    , name
+                    , description
+                    , price
+                    , in_stock AS 'inStock'
+                 FROM products`;
+
+    const queryResult = await pool.request().query(sql);
+
+    return queryResult.recordset;
+};
+
+export const createProduct = async product => {
+    const pool = await poolPromise;
+
+    const sql = `INSERT INTO products (name, description, price, in_stock)
+                 OUTPUT inserted.id
+                 VALUES (@name, @description, @price, @in_stock)`;
+    
+    const queryResult = await pool
+        .request()
+        .input("name", product.name)
+        .input("description", product.description)
+        .input("price", product.price)
+        .input("in_stock", product.inStock)
+        .query(sql);
+
+    return queryResult.recordset[0].id;
 }
 
-export const createProduct = product => {
-    const maxID = dbProducts.length > 0 ? Math.max(...dbProducts.map(p => p.id)) : 0;
+export const updateProduct = async product => {
+    const pool = await poolPromise;
 
-    const newProduct = {
-        ...product,
-        id: maxID + 1
-    };
+    const sql = `UPDATE products
+                 SET name = @name
+                 , description = @description
+                 , price = @price
+                 , in_stock = @in_stock
+                 WHERE id = @id`;
 
-    dbProducts.push(newProduct);
-    return newProduct;
+    await pool
+        .input("id", id)
+        .input("name", product.name)
+        .input("description", product.description)
+        .input("price", product.price)
+        .input("in_stock", product.inStock)
+        .query(sql);
 }
 
-export const updateProduct = product => {
-    const index = dbProducts.findIndex(p => p.id === product.id);
+export const deleteProduct = async id => {
+    const pool = await poolPromise;
 
-    if (index === -1) {
-        throw new ErrorWithStatus(404, `Prodotto con id ${product.id} non trovato.`);
-    }
+    const sql = `DELETE FROM products
+                 WHERE id = @id`;
 
-    dbProducts[index] = { ...product };
-    return product;
-}
-
-export const deleteProduct = id => {
-    const index = dbProducts.findIndex(p => p.id === id);
-
-    if (index === -1) {
-        throw new ErrorWithStatus(404, `Prodotto con id ${product.id} non trovato.`);
-    }
-
-    dbProducts.splice(index, 1);
-    return true;
+    await pool.request().input("id", id).query(sql);
 }

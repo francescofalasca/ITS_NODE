@@ -1,3 +1,4 @@
+import ErrorWithStatus from '../../error_with_status.js';
 import * as productsData from './products.data.js';
 
 export const getProductByID = id => {
@@ -12,20 +13,20 @@ export const getProducts = () => {
     return products;
 };
 
-export const createProduct = product => {
-    const newProduct = productsData.createProduct(product);
+export const createProduct = async product => {
+    const newProductID = productsData.createProduct(product);
 
-    return newProduct;
+    return await getProductByID(newProductID);
 };
 
-export const updateProduct = product => {
-    const product1 = productsData.updateProduct(product);
+export const updateProduct = async product => {
+    await productsData.updateProduct(product);
 
-    return product1;
+    return await getProductByID(product.id);
 };
 
-export const deleteProduct = id => {
-    const result = productsData.deleteProduct(id);
+export const deleteProduct = async id => {
+    await productsData.deleteProduct(id);
 
-    return result;
+    return true;
 };

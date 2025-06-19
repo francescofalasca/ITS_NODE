@@ -17,7 +17,6 @@ const sqlConfig = {
 const poolPromise = new MsSql.ConnectionPool(sqlConfig)
   .connect()
   .then((pool) => {
-    // la connessione avviene in modo asincrono, una volta connesso stampo un messaggio di log
     console.log(
       `Connected to MSSQL (${sqlConfig.server}) database name: ${sqlConfig.database}!`
     );
@@ -25,7 +24,6 @@ const poolPromise = new MsSql.ConnectionPool(sqlConfig)
     return pool;
   })
   .catch((err) => {
-    // se la connessione fallisce, stampo l'errore
     console.error(`Database connection failed! Bad config: ${err}`);
 });
 

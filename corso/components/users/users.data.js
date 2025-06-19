@@ -8,6 +8,7 @@ export const getUserByID = async id => {
     const sql = `SELECT id
                     , name
                     , email
+                    , password
                     , age
                     , is_active AS 'isActive'
                 FROM users
@@ -24,12 +25,36 @@ export const getUserByID = async id => {
     return user;
 };
 
+export const getUserByEmail = async email => {
+    const pool = await poolPromise;
+
+    const sql = `SELECT id
+                    , name
+                    , email
+                    , password
+                    , age
+                    , is_active AS 'isActive'
+                FROM users
+                WHERE email = @email`;
+
+    const queryResult = await pool.request().input("email", email).query(sql);
+
+    const user = queryResult.recordset[0];
+
+    if (!user) {
+        throw new ErrorWithStatus(404, `Utente con email ${email} non trovato.`);
+    }
+
+    return user;
+};
+
 export const getUsers = async () => {
     const pool = await poolPromise;
 
     const sql = `SELECT id
                     , name
                     , email
+                    , password
                     , age
                     , is_active AS 'isActive'
                  FROM users`;
@@ -42,14 +67,15 @@ export const getUsers = async () => {
 export const createUser = async user => {
     const pool = await poolPromise;
 
-    const sql = `INSERT INTO users (name, email, age, is_active)
+    const sql = `INSERT INTO users (name, email, password, age, is_active)
                  OUTPUT inserted.id
-                 VALUES (@name, @email, @age, @is_active)`;
+                 VALUES (@name, @email, @password, @age, @is_active)`;
     
     const queryResult = await pool
         .request()
         .input("name", user.name)
         .input("email", user.email)
+        .input("password", user.password)
         .input("age", user.age)
         .input("is_active", user.isActive)
         .query(sql);
@@ -63,14 +89,17 @@ export const updateUser = async user => {
     const sql = `UPDATE users
                  SET name = @name
                  , email = @email
+                 , password = @password
                  , age = @age
                  , is_active = @is_active
                  WHERE id = @id`;
 
     await pool
-        .input("id", id)
+        .request()
+        .input("id", user.id)
         .input("name", user.name)
         .input("email", user.email)
+        .input("password", user.password)
         .input("age", user.age)
         .input("is_active", user.isActive)
         .query(sql);

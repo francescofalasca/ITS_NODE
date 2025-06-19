@@ -5,7 +5,7 @@ import z from 'zod';
 export const getUserByID = async (req, res) => {
     const schema = z.object({
         params: z.object({
-            id: z.preprocess(val => Number(val), z.number().z.positive())
+            id: z.preprocess(val => Number(val), z.number().positive())
         })
     });
 
@@ -33,6 +33,7 @@ export const createUser = async (req, res) => {
         body: z.object({
             name: z.string(),
             email: z.string().email(),
+            password: z.string().min(8),
             age: z.number().positive().optional(),
             isActive: z.boolean()
         })
@@ -43,6 +44,7 @@ export const createUser = async (req, res) => {
     });
 
     if (!isValidData.success) {
+        console.error(isValidData.error.issues);
         throw new ErrorWithStatus(422, isValidData.error.issues);
     }
 
@@ -53,7 +55,9 @@ export const createUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     const schema = z.object({
-        id: z.preprocess(val => Number(val), z.number().positive()),
+        params: z.object({
+            id: z.preprocess(val => Number(val), z.number().positive()),
+        }),
         body: z.object({
             name: z.string(),
             email: z.string().email(),

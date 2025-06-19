@@ -5,7 +5,7 @@ import z from 'zod';
 export const getProductByID = async (req, res) => {
     const schema = z.object({
         params: z.object({
-            id: z.preprocess(val => Number(val), z.number().z.positive())
+            id: z.preprocess(val => Number(val), z.number().positive())
         })
     });
 
@@ -53,7 +53,9 @@ export const createProduct = async (req, res) => {
 
 export const updateProduct = async (req, res) => {
     const schema = z.object({
-        id: z.preprocess(val => Number(val), z.number().positive()),
+        params: z.object({
+            id: z.preprocess(val => Number(val), z.number().positive()),
+        }),
         body: z.object({
             name: z.string(),
             description: z.string(),

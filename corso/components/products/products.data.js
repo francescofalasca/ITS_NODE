@@ -68,7 +68,8 @@ export const updateProduct = async product => {
                  WHERE id = @id`;
 
     await pool
-        .input("id", id)
+        .request()
+        .input("id", product.id)
         .input("name", product.name)
         .input("description", product.description)
         .input("price", product.price)

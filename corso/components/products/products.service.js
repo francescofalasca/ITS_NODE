@@ -1,20 +1,20 @@
 import ErrorWithStatus from '../../ErrorWithStatus.js';
 import * as productsData from './products.data.js';
 
-export const getProductByID = id => {
-    const product = productsData.getProductByID(id);
+export const getProductByID = async id => {
+    const product = await productsData.getProductByID(id);
 
     return product;
 };
 
-export const getProducts = () => {
-    const products = productsData.getProducts();
+export const getProducts = async () => {
+    const products = await productsData.getProducts();
 
     return products;
 };
 
 export const createProduct = async product => {
-    const newProductID = productsData.createProduct(product);
+    const newProductID = await productsData.createProduct(product);
 
     return await getProductByID(newProductID);
 };

@@ -1,8 +1,9 @@
 // import dbUsers from '../../database/user.js';
 import poolPromise from '../config/mssql.config.js';
 import ErrorWithStatus from '../../ErrorWithStatus.js';
+import { IUser } from "./IUser";
 
-export const getUserByID = async id => {
+export const getUserByID = async (id: number): Promise<IUser> => {
     const pool = await poolPromise;
 
     const sql = `SELECT id
@@ -15,7 +16,7 @@ export const getUserByID = async id => {
 
     const queryResult = await pool.request().input("id", id).query(sql);
 
-    const user = queryResult.recordset[0];
+    const user: IUser = queryResult.recordset[0];
 
     if (!user) {
         throw new ErrorWithStatus(404, `Utente con id ${id} non trovato.`);
@@ -24,7 +25,7 @@ export const getUserByID = async id => {
     return user;
 };
 
-export const getUserByEmail = async email => {
+export const getUserByEmail = async (email:string): Promise<IUser> => {
     const pool = await poolPromise;
 
     const sql = `SELECT id
@@ -38,7 +39,7 @@ export const getUserByEmail = async email => {
 
     const queryResult = await pool.request().input("email", email).query(sql);
 
-    const user = queryResult.recordset[0];
+    const user: IUser = queryResult.recordset[0];
 
     if (!user) {
         throw new ErrorWithStatus(404, `Utente con email ${email} non trovato.`);
@@ -47,7 +48,7 @@ export const getUserByEmail = async email => {
     return user;
 };
 
-export const getUsers = async () => {
+export const getUsers = async (): Promise<IUser[]> => {
     const pool = await poolPromise;
 
     const sql = `SELECT id
@@ -62,7 +63,7 @@ export const getUsers = async () => {
     return queryResult.recordset;
 };
 
-export const createUser = async user => {
+export const createUser = async (user:IUser): Promise<number> => {
     const pool = await poolPromise;
 
     const sql = `INSERT INTO users (name, email, password, age, is_active)
@@ -81,7 +82,7 @@ export const createUser = async user => {
     return queryResult.recordset[0].id;
 };
 
-export const updateUser = async user => {
+export const updateUser = async (user: IUser): Promise<void> => {
     const pool = await poolPromise;
 
     const sql = `UPDATE users
@@ -103,7 +104,7 @@ export const updateUser = async user => {
         .query(sql);
 };
 
-export const deleteUser = async id => {
+export const deleteUser = async (id: number): Promise<void> => {
     const pool = await poolPromise;
 
     const sql = `DELETE FROM users
